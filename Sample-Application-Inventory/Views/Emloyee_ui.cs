@@ -3,96 +3,165 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sample_Application_Inventory.Controller;
+//using Sample_Application_Inventory.Models;
+//using Sample_Application_Inventory.Models;
+//using Sample_Application_Inventory.Models;
+using Sample_Application_Inventory.Models;
 
 namespace Sample_Application_Inventory.Views
 {
-    enum employee_homepage_options
+
+    public class Employee_ui
     {
-        ViewPreviouslyAllocatedProducts = 1,
-        ViewPreviouslyMadeRequests = 2,
-        RequestProduct = 3
-    }
-    class Emloyee_ui
-    {
-        public static void employee_homepage(Employee e)
+        Employee employee;
+        RequestController_Employee requestControllerEmployee;
+
+        public Employee_ui(Employee employee)
         {
-            Console.WriteLine("1. View Previously Allocated Products");
-            Console.WriteLine("2. View Previously Made Requests");
-            Console.WriteLine("3. Request a Product");
+            this.employee = employee;
+            this.requestControllerEmployee = new RequestController_Employee(employee);
+        }
+        public void employee_homepage()
+        {
             Console.WriteLine();
+            ui_console_statements.showEmployeeHomepage();
 
 
             while (true)
             {
-                int i = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Option No:- ");
+                int i;
+                bool flag = int.TryParse(Console.ReadLine(), out i);
+                if (flag)
+                {
+                    var key = (employee_homepage_options)i;
+                    if (key == employee_homepage_options.ViewPreviouslyAllocatedProducts)
+                    {
+                        employee_allocatedProducts();
+                        break;
+                    }
+                    else if (key == employee_homepage_options.ViewPreviouslyMadeRequests)
+                    {
 
-                if (i == (int)employee_homepage_options.ViewPreviouslyAllocatedProducts)
-                {
-                    employee_allocatedProducts();
-                }
-                else if (i == (int)employee_homepage_options.ViewPreviouslyMadeRequests)
-                {
-
-                    employee_requests(e);
-                }
-                else if (i == (int)employee_homepage_options.RequestProduct)
-                {
-                    requestProduct(e);
+                        employee_requests();
+                        break;
+                    }
+                    else if (key == employee_homepage_options.RequestProduct)
+                    {
+                        requestProduct();
+                        break;
+                    }
+                    else if (key == employee_homepage_options.ReturnProduct)
+                    {
+                        returnProduct();
+                        break;
+                    }
+                    else if(key == employee_homepage_options.Logout)
+                    {
+                        logout();
+                        break;
+                    }
+                    else if (key == employee_homepage_options.Exit)
+                    {
+                        exit();
+                        break;
+                    }
+                    else
+                    {
+                        ui_console_statements.showInvalidStatement();
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid Input. Please try again.");
+                    ui_console_statements.showInvalidStatement();
                 }
             }
         }
 
-        public static void employee_allocatedProducts()
+        public void employee_allocatedProducts()
         {
-            //List<ArrayList> prod = employee.getAllocatedProducts();
-            //int i = 1;
 
-            //foreach(var product in prod)
-            //{
-            //    Product p = Product(product[0]);
-            //    Console.WriteLine($"{i}. {product[0].Name} Quantity- {product.Value} ")
-            //}
-            //foreach(var product in prod)
-            //{
-            //    Console.WriteLine($"{i}. {product.Key.Name} Quantity- {product.Value} ");
-            //    i++;
-            //}
+            Dictionary<Product, int> keyValuePairs = Controllers.Instance.productController.GetEmployeeProducts(employee);
+            if(keyValuePairs.Count == 0)
+            {
+                Console.WriteLine("No product is allocated yet.");
+                Console.WriteLine();
+                Console.WriteLine("Loading back to Homepage.");
+                Console.WriteLine();
+                employee_homepage();
+            }
+
+            int i = 1;
+
+            foreach (var product in keyValuePairs)
+            {
+                
+                Console.WriteLine($"{i++}. {product.Key.Name} Quantity- {product.Value} ");
+
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Loading back to Homepage.");
+            Console.WriteLine();
+
+            employee_homepage();
+
         }
 
-        public static void employee_requests(Employee employee)
+        public void employee_requests()
         {
-            List<Request> requests = employee.getRequests();
+            List<Request> requests = requestControllerEmployee.GetEmployeeRequests();
+            if(requests.Count == 0)
+            {
+                Console.WriteLine("No request is made yet.");
+                Console.WriteLine();
+                Console.WriteLine("Loading back to Homepage...");
+                employee_homepage();
+            }
             int i = 1;
             foreach (Request r in requests)
             {
-                Console.WriteLine($"Product Name:- {r.product_name}  Department Name:- {r.department_name} Quantity Requested:- {r.quantity} Current Status:- {r.status}");
+                Console.WriteLine($"{i++}. Product Name:- {r.product_name}  Department Name:- {r.department_name} Quantity Requested:- {r.quantity} Current Status:- {r.status}");
             }
+
+            Console.WriteLine();
+            Console.WriteLine("Loading back to Homepage...");
+            Console.WriteLine();
+            employee_homepage();
         }
 
-        public static void requestProduct(Employee employee)
+        public void requestProduct()
         {
-            List<Department> list = database_manager.getDepartments();
+            Console.WriteLine();
+            List<Department> list = Controllers.Instance.departmentController.getDepartments();
             int i = 1;
             foreach (Department department in list)
             {
-                Console.WriteLine(i + " " + department.Name);
+                Console.WriteLine(i + " " + department.name);
                 i++;
             }
             Console.WriteLine();
             Console.WriteLine("Please choose a department from above list");
             Console.Write("Department No:- ");
-            int department_id = Convert.ToInt32(Console.ReadLine());
 
-            if (department_id < 1 || department_id >= i)
-            {
-                Console.WriteLine("Invalid Input");
+            int department_id;
+
+            while (true) {
+                bool flag = int.TryParse(Console.ReadLine(), out department_id);
+
+                if (!flag || department_id < 1 || department_id >= i)
+                {
+                    ui_console_statements.showInvalidStatement();
+                }
+                else
+                {
+                    break;
+                }
             }
+            
 
-            List<Product> pr = list[department_id - 1].getProducts();
+            List<Product> pr = list[department_id - 1].GetProducts();
 
             int j = 1;
 
@@ -104,23 +173,118 @@ namespace Sample_Application_Inventory.Views
             Console.WriteLine();
             Console.WriteLine("Please choose a product from above list.");
             Console.WriteLine("Product No:- ");
-            int product_id = Convert.ToInt32(Console.ReadLine());
-            if (product_id < 1 || product_id >= j)
+            int product_id;
+            while (true)
             {
-                Console.WriteLine("Invalid input");
+                bool flag = int.TryParse(Console.ReadLine(), out product_id);
+                if (!flag || product_id < 1 || product_id >= j)
+                {
+                    ui_console_statements.showInvalidStatement();
+                }
+                else
+                {
+                    break;
+                }
             }
+            
 
             Console.WriteLine();
             Console.Write("Please specify quantity:- ");
-            int quant = Convert.ToInt32(Console.ReadLine());
-            if (quant < 1 || quant > pr[product_id - 1].Quantity)
+            int quant;
+
+            while (true)
             {
-                Console.WriteLine("Invalid input. Application exiting");
+                bool flag = int.TryParse(Console.ReadLine(), out quant);
+
+                if (!flag || quant < 1 || quant > pr[product_id - 1].Quantity)
+                {
+                    ui_console_statements.showInvalidStatement();
+                }
+                else
+                {
+                    break;
+                }
             }
 
-            employee.requestProduct(product_id - 1, department_id - 1, quant, pr[product_id - 1].Name, list[department_id - 1].Name);
+            
+            requestControllerEmployee.RequestProduct(product_id - 1, department_id - 1, quant, pr[product_id - 1].Name, list[department_id - 1].name);
             Console.WriteLine();
             Console.WriteLine("Request Successful");
+            Console.WriteLine();
+
+            Console.WriteLine("Loading back to Homepage...");
+            employee_homepage();
+        }
+
+        public void returnProduct()
+        {
+            Console.WriteLine();
+            Dictionary<Product, int> keyValuePairs = Controllers.Instance.productController.GetEmployeeProducts(employee);
+
+
+            int i = 1;
+
+            foreach (var product in keyValuePairs)
+            {
+
+                Console.WriteLine($"{i++}. {product.Key.Name} Quantity- {product.Value} ");
+
+            }
+
+            Console.WriteLine();
+
+            Console.Write("Please enter Product No you want to return.");
+            int product_id;
+
+            while (true)
+            {
+                bool flag = int.TryParse(Console.ReadLine(), out product_id);
+                if (!flag || product_id < 1 || product_id >= i)
+                {
+                    ui_console_statements.showInvalidStatement();
+                    
+                }
+                else
+                {
+                    break; }
+            }
+            
+            
+
+            
+            Console.Write("Please enter quantity:- ");
+
+            int quantity;
+            int product_quantity = keyValuePairs.ElementAt(product_id - 1).Value;
+            while (true)
+            {
+                bool flag = int.TryParse(Console.ReadLine(), out quantity);
+
+                if (!flag || quantity < 1 || quantity > product_quantity)
+                {
+                    Console.WriteLine("Invalid Input for Quantity. Please try again.");
+                    
+                }
+                else { break; }
+            }
+           
+           
+
+            Controllers.Instance.productController.returnProduct(employee,keyValuePairs.ElementAt(product_id - 1).Key, quantity,product_id-1);
+            Console.WriteLine();
+            Console.WriteLine("Product Successfully returned");
+            
+        }
+
+        public void logout()
+        {
+            Program.app.start();
+        }   
+        
+
+        public void exit()
+        {
+            Environment.Exit(0);
         }
     }
 }

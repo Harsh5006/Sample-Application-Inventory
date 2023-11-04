@@ -4,9 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sample_Application_Inventory
+namespace Sample_Application_Inventory.Models
 {
-    class Request
+    enum status_type
+    {
+        NotAddressed = 1,
+        Accepted = 2,
+        Rejected = 3
+    }
+    public class Request
     {
         public string Id;
         public int product_id;
@@ -16,8 +22,9 @@ namespace Sample_Application_Inventory
         public string department_name;
         public string email_address;
         public string status;
+        public int status_Id;
 
-        public Request(string Id,int product_id,int department_id,int quantity,string product_name,string department_name,string email_address)
+        public Request(string Id, int product_id, int department_id, int quantity, string product_name, string department_name, string email_address)
         {
             this.Id = Id;
             this.product_id = product_id;
@@ -26,8 +33,12 @@ namespace Sample_Application_Inventory
             this.product_name = product_name;
             this.department_name = department_name;
             this.email_address = email_address;
-            this.status = "Not addressed yet.";
+            status = "Not addressed yet.";
+            status_Id = (int)status_type.NotAddressed;
         }
-
+        public void changeStatus(int num)
+        {
+            status_Id = num;
+        }
     }
 }

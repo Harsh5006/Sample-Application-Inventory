@@ -4,10 +4,14 @@ using System;
 
 class Program
 {
+    public static App app;
+    
     public static void Main(string[] args)
     {
         //App app = new App();
         //app.start();
-        App.start();
+
+        app = new App();
+        app.start();
     }
 }

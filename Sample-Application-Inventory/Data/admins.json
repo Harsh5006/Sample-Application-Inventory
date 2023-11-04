@@ -1,1 +1,8 @@
-[{"user_name":"harsh","password":"itsmeharsh","email_address":"harsh.bhargava5006@gmail.com","role":1},{"user_name":"akshu","password":"akshuisgood","email_address":"akshat.parakh@gmail.com","role":1},{"user_name":"milind","password":"itsmemilind","email_address":"milind@gmail.com","role":1}]
+[
+  {
+    "user_name": "admin",
+    "password": "Admin@123456",
+    "email_address": "admin@gmail.com",
+    "role": 1
+  }
+]

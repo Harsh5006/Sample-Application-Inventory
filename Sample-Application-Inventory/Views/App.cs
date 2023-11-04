@@ -1,61 +1,60 @@
 ﻿using Sample_Application_Inventory.Views;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-//using Sample_Application_Inventory.Controller;
-//using Sample_Application_Inventory.Database;
+using Sample_Application_Inventory.Models;
 
 namespace Sample_Application_Inventory
 {
-    enum options
+    
+    public class App
     {
-        login=1,
-        register = 2,
-        exit = 3
-    }
-    class App
-    {
+        Auth_ui authUI;
 
-        
-        public static void start()
+        public App()
         {
-            Console.WriteLine("Inventory Mangement - Office");
-            Console.WriteLine("1. Login");
-            Console.WriteLine("2. Register");
-            Console.WriteLine("3. Exit");
+            authUI = new Auth_ui();
+        }
+        
+        public void start()
+        {
+            ui_console_statements.showHomepage();
 
-            
 
             while (true) {
                 Console.WriteLine("Enter 1,2 or 3");
-                int i = Convert.ToInt32(Console.ReadLine());
-                if (i == (int)options.login)
+                int i;
+                
+                bool flag = int.TryParse(Console.ReadLine(),out i);
+                
+                if (flag)
                 {
-                    Auth_ui.login();
-                    
-                }
-                else if (i == (int)options.register)
-                {
-                    Auth_ui.register();
-                }
-                else if (i == 3)
-                {
-                    exit();
+                    var key = (options)i;
+                    if (key == options.login)
+                    {
+                        authUI.login();
+                        break;
+                    }
+                    else if (key == options.register)
+                    {
+                        authUI.register();
+                        break;
+                    }
+                    else if (key == options.exit)
+                    {
+                        exit();
+
+                    }
+                    else
+                    {
+                        ui_console_statements.showInvalidStatement();
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid Input. Please try again");
+                    ui_console_statements.showInvalidStatement();
                 }
             }
-
-            
         }
 
-        public static void exit()
+        public void exit()
         {
             Environment.Exit(0);
         }
@@ -94,7 +93,7 @@ namespace Sample_Application_Inventory
         //    Console.Write("Password - ");
         //    string s2 = Console.ReadLine();
 
-        //    ad = auth_manager.login_Admin(s,s2);
+        //    ad = AuthManager.login_Admin(s,s2);
         //    if(ad == null)
         //    {
         //        Console.WriteLine("User don't exists. Application exiting");
@@ -111,7 +110,7 @@ namespace Sample_Application_Inventory
         //    Console.Write("Password - ");
         //    string s2 = Console.ReadLine();
 
-        //    employee = auth_manager.login_Employee(s, s2);
+        //    employee = AuthManager.login_Employee(s, s2);
         //    if(employee == null)
         //    {
         //        Console.WriteLine("User don't exists. Application exiting");
@@ -407,7 +406,7 @@ namespace Sample_Application_Inventory
         //    Console.Write("Password - ");
         //    string s3 = Console.ReadLine();
 
-        //    auth_manager.register(s, s2, s3,0);
+        //    AuthManager.register(s, s2, s3,0);
         //}
 
         //public void request_new_product()

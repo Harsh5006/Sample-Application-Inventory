@@ -5,223 +5,319 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Sample_Application_Inventory.Models;
+//using Sample_Application_Inventory.Models;
+//using Sample_Application_Inventory.Models;
+//using Sample_Application_Inventory.Models;
+//using Sample_Application_Inventory.Models;
 //using Sample_Application_Inventory.Controller;
 
-namespace Sample_Application_Inventory
-{
+//namespace Sample_Application_Inventory
+//{
 
 
-    static class database_manager
-    {
-        static private List<Department> departments;
-        static private List<Employee> employees;
-        static private List<Admin> admins;
-        static private List<Request> requests;
-        static public Dictionary<string, Product> products_map;
-        static public Dictionary<string, Department> departments_map;
-        static public Dictionary<string, Request> requests_map;
-        //static private List<Product> products;
+//    public sealed class database_manager
+//    {
+//        List<Department> departments;
+//        List<Employee> employees;
+//        List<Admin> admins;
+//        List<Request> requests;
+//        List<ExceptionModel> exceptions;
+//        Dictionary<string, Product> products_map;
+//        Dictionary<string, Department> departments_map;
+//        Dictionary<string, Request> requests_map;
+        
 
 
 
-        static private string department_path = "C:\\Users\\hbhargava\\source\\repos\\Sample-Application-Inventory\\Sample-Application-Inventory\\Data\\departments.json";
-        static private string employees_path = "C:\\Users\\hbhargava\\source\\repos\\Sample-Application-Inventory\\Sample-Application-Inventory\\Data\\employees.json";
-        static private string admins_path = "C:\\Users\\hbhargava\\source\\repos\\Sample-Application-Inventory\\Sample-Application-Inventory\\Data\\admins.json";
-        static private string requests_path = "C:\\Users\\hbhargava\\source\\repos\\Sample-Application-Inventory\\Sample-Application-Inventory\\Data\\requests.json";
-        //static private string products_path = "C:\\Users\\hbhargava\\source\\repos\\Sample-Application-Inventory\\Sample-Application-Inventory\\Database\\products.json";
+//        string department_path = "C:\\Users\\hbhargava\\source\\repos\\Sample-Application-Inventory\\Sample-Application-Inventory\\Data\\departments.json";
+//        string employees_path = "C:\\Users\\hbhargava\\source\\repos\\Sample-Application-Inventory\\Sample-Application-Inventory\\Data\\employees.json";
+//        string admins_path = "C:\\Users\\hbhargava\\source\\repos\\Sample-Application-Inventory\\Sample-Application-Inventory\\Data\\admins.json";
+//        string requests_path = "C:\\Users\\hbhargava\\source\\repos\\Sample-Application-Inventory\\Sample-Application-Inventory\\Data\\requests.json";
+//        string exceptions_path = "C:\\Users\\hbhargava\\source\\repos\\Sample-Application-Inventory\\Sample-Application-Inventory\\Data\\exceptions.json";
+        
+
+//        private static database_manager _instance = null;
+
+//        private static readonly object lockObj = new object();
+
+        
 
 
-        static database_manager()
-        {
-            string department_data = File.ReadAllText(department_path);
-            departments = JsonConvert.DeserializeObject<List<Department>>(department_data);
-            if (departments == null)
-            {
-                departments = new List<Department>();
-            }
+//        private database_manager()
+//        {
 
-            string employees_data = File.ReadAllText(employees_path);
-            employees = JsonConvert.DeserializeObject<List<Employee>>(employees_data);
-            if(employees == null)
-            {
-                employees = new List<Employee>();
-            }
+//            string exceptions_data = File.ReadAllText(exceptions_path);
 
-
-            string admins_data = File.ReadAllText(admins_path);
-            admins = JsonConvert.DeserializeObject<List<Admin>>(admins_data);
-            if(admins == null)
-            {
-                admins = new List<Admin>();
-            }
-
-
-            string requests_data = File.ReadAllText(requests_path);
-            requests = JsonConvert.DeserializeObject<List<Request>>(requests_data);
-            if (requests == null)
-            {
-                requests = new List<Request>();
-            }
-
-            intialization();
-        }
-        static void intialization()
-        {
-            products_map = new Dictionary<string, Product>(); ;
-            departments_map = new Dictionary<string, Department>();
-            requests_map = new Dictionary<string, Request>();
-
-            foreach(Request r in requests)
-            {
-                requests_map.Add(r.Id, r);
-            }
-            foreach(Department d in departments)
-            {
-                departments_map.Add(d.Id, d);
-                List<Product> department_product = d.getProducts();
-                foreach(Product p in department_product)
-                {
-                    products_map.Add(p.Id, p);
-                }
-            }
+//            try
+//            {
+//                exceptions = JsonConvert.DeserializeObject<List<ExceptionModel>>(exceptions_data);
+//                //throw new Exception();
+//            }
+//            catch(Exception e)
+//            {
+//                exceptions = new List<ExceptionModel>();
+//                AddException(e.ToString());
+//            }
+//            string department_data = File.ReadAllText(department_path);
             
-        }
+//            try
+//            {
+//                departments = JsonConvert.DeserializeObject<List<Department>>(department_data);
+//            }
+//            catch(Exception e)
+//            {
+//                departments = new List<Department>();
+//                AddException(e.ToString());
+
+//            }
+
+//            string employees_data = File.ReadAllText(employees_path);
+
+//            try
+//            {
+//                employees = JsonConvert.DeserializeObject<List<Employee>>(employees_data);
+//            }
+//            catch(Exception e)
+//            {
+//                employees = new List<Employee>();
+//                AddException(e.ToString());
+//            }
+           
+            
 
 
-        private static void updateDepartment()
-        {
-            string new_department_data = JsonConvert.SerializeObject(departments);
-            File.WriteAllText(department_path, new_department_data);
-        }
-        private static void updateEmployees()
-        {
-            string new_employee_data = JsonConvert.SerializeObject(employees);
-            File.WriteAllText(employees_path,new_employee_data);
-        }
-        private static void updateAdmins()
-        {
-            string new_admins_data = JsonConvert.SerializeObject(admins);
-            File.WriteAllText(admins_path, new_admins_data);
-        }
-        private static void updateRequests()
-        {
-            string new_requests_data = JsonConvert.SerializeObject(requests);
-            File.WriteAllText(requests_path, new_requests_data);
-        }
+//            string admins_data = File.ReadAllText(admins_path);
+//            try
+//            {
+//                admins = JsonConvert.DeserializeObject<List<Admin>>(admins_data);
+//            }
+//            catch(Exception e)
+//            {
+//                admins = new List<Admin>();
+//                AddException(e.ToString());
+//            }
+            
 
 
-        public static void addEmployee(Employee e)
-        {
-            employees.Add(e);
-            updateEmployees();
-        }
-        public static void addDepartment(Department d)
-        {
-            departments.Add(d);
-            departments_map.Add(d.Id, d);
-            updateDepartment();
-        } 
-        public static void addAdmin(Admin a)
-        {
-            admins.Add(a);
-            updateAdmins();
-        }
+//            string requests_data = File.ReadAllText(requests_path);
+            
+//            try
+//            {
+//                requests = JsonConvert.DeserializeObject<List<Request>>(requests_data);
+//            }
+//            catch(Exception e)
+//            {
+//                requests = new List<Request>();
+//                AddException(e.ToString());
+//            }
 
-        public static List<Department> getDepartments()
-        {
-            return departments;
-        }
-        public static List<Employee> getEmployees()
-        {
-            return employees;
-        }
+//            intialization();
 
-        public static List<Admin> getAdmins()
-        {
-            return admins;
-        }
+//        }
 
-        public static void RemoveDepartment(Department d)
-        {
-            foreach(Department e in departments)
-            {
-                if(d == e)
-                {
-                    departments.Remove(e);
-                }
-            }
-            updateDepartment();
-        }
+//        public static database_manager Instance
+//        {
+//            get
+//            {
+//                lock (lockObj)
+//                {
+//                    if (_instance == null)
+//                    {
+//                        _instance = new database_manager();
+//                    }
+//                }
+//                return _instance;
+//            }
+//        }
 
-        public static void AddProduct(Product p,int department_index)
-        {
-            departments[department_index].Add_Product(p);
-            products_map.Add(p.Id, p);
-            updateDepartment();
-        }
 
-        public static void AddRequest(Request r)
-        {
-            requests.Add(r);
-            requests_map.Add(r.Id, r);
-            updateRequests();
-            updateEmployees();
-        }
+//        private void intialization()
+//        {
+//            products_map = new Dictionary<string, Product>();
+//            departments_map = new Dictionary<string, Department>();
+//            requests_map = new Dictionary<string, Request>();
 
-        public static List<Product> GetProducts(int department_id)
-        {
-            return departments[department_id].getProducts();
-        }
+//            foreach (Request r in requests)
+//            {
+//                requests_map.Add(r.Id, r);
+//            }
 
-        public static List<Request> GetRequests()
-        {
-            return requests;
-        }
+//            foreach (Department d in departments)
+//            {
+//                departments_map.Add(d.Id, d);
+//                List<Product> department_product = d.getProducts();
+//                foreach (Product p in department_product)
+//                {
+//                    products_map.Add(p.Id, p);
+//                }
+//            }
+//        }
 
-        public static void removeRequest(int request_id)
-        {
-            //requests.RemoveAt(request_id);
-            updateRequests();
-            updateEmployees();
-            updateDepartment();
-        }
 
-        public static string generateId()
-        {
-            StringBuilder builder = new StringBuilder();
-            Enumerable
-               .Range(65, 26)
-                .Select(e => ((char)e).ToString())
-                .Concat(Enumerable.Range(97, 26).Select(e => ((char)e).ToString()))
-                .Concat(Enumerable.Range(0, 10).Select(e => e.ToString()))
-                .OrderBy(e => Guid.NewGuid())
-                .Take(11)
-                .ToList().ForEach(e => builder.Append(e));
-            string id = builder.ToString();
+//        private  void updateDepartment()
+//        {
+//            string new_department_data = JsonConvert.SerializeObject(departments);
+//            File.WriteAllText(department_path, new_department_data);
+//        }
+//        private  void updateEmployees()
+//        {
+//            string new_employee_data = JsonConvert.SerializeObject(employees);
+//            File.WriteAllText(employees_path,new_employee_data);
+//        }
+//        private  void updateAdmins()
+//        {
+//            string new_admins_data = JsonConvert.SerializeObject(admins);
+//            File.WriteAllText(admins_path, new_admins_data);
+//        }
+//        private  void updateRequests()
+//        {
+//            string new_requests_data = JsonConvert.SerializeObject(requests);
+//            File.WriteAllText(requests_path, new_requests_data);
+//        }
 
-            return id;
-        }
+//        private void updateExceptions()
+//        {
+//            string new_exceptions_data = JsonConvert.SerializeObject(exceptions);
+//            File.WriteAllText(exceptions_path, new_exceptions_data);
+//        }
+
+//        private void update<T>(string path,List<T> list)
+//        {
+//            string new_data = JsonConvert.SerializeObject(list);
+//            File.WriteAllText(path, new_data);
+//        }
 
 
 
-        public static List<Request> getRequestsforEmployees(List<string> data)
-        {
-            List<Request> ls = new List<Request>();
-            foreach(string s in data)
-            {
-                ls.Add(requests_map.GetValueOrDefault(s));
-            }
-            return ls;
-        }
 
-        public static List<Product> getProductById(List<string> data)
-        {
-            List<Product> ls = new List<Product>();
-            foreach(string p in data)
-            {
-                ls.Add(products_map.GetValueOrDefault(p));
-            }
-            return ls;
-        }
-    }
-}
+
+//        public void addEmployee(Employee e)
+//        {
+//            employees.Add(e);
+//            //updateEmployees();
+
+//            update<Employee>(employees_path, employees);
+//        }
+//        public void addDepartment(Department d)
+//        {
+//            departments.Add(d);
+//            departments_map.Add(d.Id, d);
+//            updateDepartment();
+//        }
+//        public  void addAdmin(Admin a)
+//        {
+//            admins.Add(a);
+//            updateAdmins();
+//        }
+
+//        public List<Department> getDepartments()
+//        {
+//            return departments;
+//        }
+//        public List<Employee> getEmployees()
+//        {
+//            return employees;
+//        }
+
+//        public List<Admin> getAdmins()
+//        {
+//            return admins;
+//        }
+
+        
+
+//        public  void AddProduct(Product p,int department_index)
+//        {
+//            departments[department_index].Add_Product(p);
+//            products_map.Add(p.Id, p);
+//            updateDepartment();
+//        }
+
+//        public void AddRequest(Request r)
+//        {
+//            requests.Add(r);
+//            requests_map.Add(r.Id, r);
+//            updateRequests();
+//            updateEmployees();
+//        }
+
+//        public List<Product> GetProducts(int department_id)
+//        {
+//            return departments[department_id].getProducts();
+//        }
+
+//        public  List<Request> GetRequests()
+//        {
+//            return requests;
+//        }
+
+//        public void removeRequest(int request_id)
+//        {
+//            //requests.RemoveAt(request_id);
+//            updateRequests();
+//            updateEmployees();
+//            updateDepartment();
+//        }
+
+
+
+
+//        public List<Request> getRequestsforEmployees(List<string> data)
+//        {
+//            List<Request> ls = new List<Request>();
+//            foreach(string s in data)
+//            {
+//                ls.Add(requests_map.GetValueOrDefault(s));
+//            }
+
+//            //data.ForEach((d)=>ls.Add(requests_map.GetValueOrDefault(d)));
+//            return ls;
+//        }
+
+//        public List<Product> getProductById(List<string> data)
+//        {
+//            List<Product> ls = new List<Product>();
+//            foreach(string p in data)
+//            {
+//                ls.Add(products_map.GetValueOrDefault(p));
+//            }
+//            return ls;
+//        }
+
+
+//        public Dictionary<Request,int> getUnaddresedRequests()
+//        {
+//            Dictionary<Request, int> ls = new Dictionary<Request, int>();
+//            int i = 0;
+
+
+//            foreach (Request request in requests)
+//            {
+//                if (request.status_Id == 1)
+//                {
+
+//                    ls.Add(request, i);
+//                }
+//                i++;
+//            }
+
+
+//            return ls;
+//        }
+
+//        public void updateforReturnproduct()
+//        {
+//            updateDepartment();
+//            updateEmployees();
+//            intialization();
+//        }
+
+//        public void AddException(string message)
+//        {
+//            ExceptionModel exceptionMessage = new ExceptionModel(message);
+//            exceptions.Add(exceptionMessage);
+//            updateExceptions();
+//        }
+//    }
+//}

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sample_Application_Inventory
+namespace Sample_Application_Inventory.Models
 {
-    internal class Product
+    public class Product
     {
         public string Id;
         public string Name;
@@ -14,11 +14,11 @@ namespace Sample_Application_Inventory
         public int Quantity;
 
 
-        public Product(string name,string Id,string department_Id,int Quantity)
+        public Product(string name, string Id, string department_Id, int Quantity)
         {
-            this.Name = name;
+            Name = name;
             this.Id = Id;
-            this.Department_Id = department_Id;
+            Department_Id = department_Id;
             this.Quantity = Quantity;
         }
     }

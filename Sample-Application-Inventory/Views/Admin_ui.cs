@@ -1,85 +1,150 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Sample_Application_Inventory.Controller;
+using Sample_Application_Inventory.Models;
+using Sample_Application_Inventory.Controller;
 
 namespace Sample_Application_Inventory.Views
 {
-    enum admin_homepage_options
-    {
-        view_departments = 1,
-        create_new_department = 2,
-        create_new_product = 3,
-        create_new_admin = 4,
-        review_requests = 5
-    }
-    internal class Admin_ui
-    {
 
-        public static void admin_homepage(Admin admin)
+    public class AdminUI
+    {
+        Admin admin;
+        AdminController adminController;
+        RequestController_Admin adminRequestController;
+        public AdminUI(Admin admin)
         {
-            Console.WriteLine("1. View Departments");
-            Console.WriteLine("2. Create a new Department");
-            Console.WriteLine("3. Create a new Product.");
-            Console.WriteLine("4. Create a new Admin");
-            Console.WriteLine("5. Review Requests");
+            this.admin = admin;
+            adminController = new AdminController();
+            adminRequestController = new RequestController_Admin();
+        }
 
-            Console.WriteLine("Choose a Option from above");
-
+        public void admin_homepage()
+        {
+            Console.WriteLine();
+            ui_console_statements.showAdminHomepage();
             while (true)
             {
                 Console.Write("Option Number:- ");
-                int i = Convert.ToInt32(Console.ReadLine());
+                int i;
+                bool flag = int.TryParse(Console.ReadLine(), out i);
 
-                if (i == (int)admin_homepage_options.view_departments)
+
+                
+
+                if (flag)
                 {
-                    viewDepartment();
-                }
-                else if (i == (int)admin_homepage_options.create_new_department)
-                {
-                    createDepartment(admin);
-                }
-                else if (i == (int)admin_homepage_options.create_new_product)
-                {
-                    createNewProduct(admin);
-                }
-                else if (i == (int)admin_homepage_options.create_new_admin)
-                {
-                    addAdmin(admin);
-                }
-                else if (i == (int)admin_homepage_options.review_requests)
-                {
-                    reviewRequest(admin);
+                    var key = (admin_homepage_options)i;
+
+                    if (key == admin_homepage_options.view_departments)
+                    {
+                        viewDepartment();
+                        break;
+                    }
+                    else if (key == admin_homepage_options.view_employees)
+                    {
+                        viewEmployees();
+                        break;
+                    }
+                    else if (key == admin_homepage_options.create_new_department)
+                    {
+                        createDepartment();
+                        break;
+                    }
+                    else if (key == admin_homepage_options.create_new_product)
+                    {
+                        createNewProduct();
+                        break;
+                    }
+                    else if (key == admin_homepage_options.create_new_admin)
+                    {
+                        addAdmin();
+                        break;
+                    }
+                    else if (key == admin_homepage_options.review_requests)
+                    {
+                        reviewRequest();
+                        break;
+                    }
+                    else if(key == admin_homepage_options.logout)
+                    {
+                        logout();
+                        break;
+                    }
+                    else if(key == admin_homepage_options.Exit)
+                    {
+                        exit();
+                        break;
+                    }
+                    else
+                    {
+                        ui_console_statements.showInvalidStatement();
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid Option. Please try again");
+                    ui_console_statements.showInvalidStatement();
                 }
             }
         }
 
-
-        public static void viewDepartment()
+        public void viewEmployees()
         {
-            List<Department> list = database_manager.getDepartments();
+            Console.WriteLine();
+            Console.WriteLine("Following is the list of employees in the Inventory System:- ");
+            List<Employee> employees = adminController.GetEmployees();
+            foreach(Employee employee in employees)
+            {
+                Console.WriteLine("-------------------------------------------------------------------------------");
+                Console.WriteLine("Employee Username:- "+employee.user_name);
+                Console.WriteLine("Employee Email:- " + employee.email_address);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Returning back to Homepage.");
+            admin_homepage();
+        }
+
+
+        public void viewDepartment()
+        {
+            Console.WriteLine();
+            List<Department> list = Controllers.Instance.departmentController.getDepartments();
             int i = 1;
             foreach (Department department in list)
             {
-                Console.WriteLine(i + " " + department.Name);
+                Console.WriteLine(i + " " + department.name);
                 i++;
             }
             Console.WriteLine();
             Console.WriteLine("Please choose a department from above list");
             Console.Write("Department No:- ");
-            int department_id = Convert.ToInt32(Console.ReadLine());
 
-            if (department_id < 1 || department_id >= i)
+            int department_id;
+            while (true)
             {
-                Console.WriteLine("Invalid Input");
+                bool flag = int.TryParse(Console.ReadLine(), out department_id);
+
+                if (!flag || department_id < 1 || department_id >= i)
+                {
+                    Console.WriteLine("Invalid Input");
+                }
+                else
+                {
+                    break;
+                }
             }
 
-            List<Product> pr = list[department_id - 1].getProducts();
+
+
+            
+
+            List<Product> pr = list[department_id - 1].GetProducts();
 
             int j = 1;
 
@@ -88,65 +153,143 @@ namespace Sample_Application_Inventory.Views
                 Console.WriteLine(j + " " + product.Name + " Quantity:- " + product.Quantity);
                 j++;
             }
-            //Console.WriteLine();
-            //Console.WriteLine("Please choose a product from above list.");
-            //Console.WriteLine("Product No:- ");
-            //int product_id = Convert.ToInt32(Console.ReadLine());
-            //if(product_id < 1 || product_id >= j)
-            //{
-            //    Console.WriteLine("Invalid input");
-            //}
 
+            Console.WriteLine();
+            Console.WriteLine("Returning back to Homepage.");
+            admin_homepage();
         }
 
 
 
-        public static void createDepartment(Admin admin)
+        public void createDepartment()
         {
+            Console.WriteLine();
             Console.WriteLine("Provide following info for creating new Department:- ");
             Console.WriteLine();
             Console.Write("Department Name:- ");
-            string s = Console.ReadLine();
-            admin.create_new_Department(s);
+            string s;
+
+            while (true)
+            {
+                s = Console.ReadLine();
+                if (validate_department_name(s))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid Department Name or Department already exists. Please try again.");
+                }
+            }
+            
+            Controllers.Instance.departmentController.create_new_Department(s);
 
             Console.WriteLine();
             Console.WriteLine("New Department Created");
-            admin_homepage(admin);
+            Console.WriteLine();
+            Console.WriteLine("Returning back to Homepage.");
+            admin_homepage();
+        }
+        private bool validate_department_name(string department_name)
+        {
+            
+            if(department_name.Length < 4)
+            {
+                return false;
+            }
+            List<Department> departments = Controllers.Instance.departmentController.getDepartments();
+            foreach (Department department in departments)
+            {
+                if (department.name.Equals(department_name))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
-        public static void createNewProduct(Admin admin)
+        public void createNewProduct()
         {
-            List<Department> list = database_manager.getDepartments();
+            Console.WriteLine();
+            List<Department> list = Controllers.Instance.departmentController.getDepartments();
             int i = 1;
             foreach (Department department in list)
             {
-                Console.WriteLine(i + ". " + department.Name);
+                Console.WriteLine(i + ". " + department.name);
                 i++;
             }
             Console.WriteLine();
             Console.WriteLine("Choose a Department from above List");
             Console.WriteLine();
             Console.Write("Department Number:- ");
-            int department_id = Convert.ToInt32(Console.ReadLine());
-            if (department_id < 1 || department_id >= i)
+            int department_id;
+            while (true)
             {
-                Console.WriteLine("Invalid Input");
+                bool flag = int.TryParse(Console.ReadLine(), out department_id);
+                if (!flag || department_id < 1 || department_id >= i)
+                {
+                    Console.WriteLine("Invalid Input");
+                }
+                else
+                {
+                    break;
+                }
             }
-
+        
+            
             Console.WriteLine();
             Console.WriteLine("Please provide following information for new Product");
             Console.Write("Name:- ");
-            string s = Console.ReadLine();
+            string s;
+            while (true)
+            {
+                s = Console.ReadLine();
+                if (!validate_product_name(admin, list[department_id - 1], s))
+                {
+                    Console.WriteLine("Invalid Input or Product name already exists.Please try again.");
+                }
+                else
+                {
+                    break;
+                }
+            }
             Console.Write("Quantity:- ");
-            int quan = Convert.ToInt32(Console.ReadLine());
-            admin.create_new_Product(s, list[department_id - 1].Name, quan, department_id - 1, list[department_id - 1].Id);
+            int quan;
+            while (true)
+            {
+                bool flag = int.TryParse(Console.ReadLine(), out quan);
+                if (!flag)
+                {
+                    Console.WriteLine("Invalid Input. Please try again.");
+                }
+                else
+                {
+                    break;
+                }
+            }
+            Controllers.Instance.productController.CreateNewProduct(s, list[department_id - 1].name, quan, department_id - 1, list[department_id - 1].id);
             Console.WriteLine("New Product Added");
             Console.WriteLine();
-            admin_homepage(admin);
+            Console.WriteLine("Returning back to Homepage.");
+            admin_homepage();
+        }
+        private bool validate_product_name(Admin admin,Department department,string productName)
+        {
+            if(productName.Length < 4)
+            {
+                return false;
+            }
+            List<Product> products = department.GetProducts();
+            foreach (Product product in products) {
+                if (product.Name.Equals(productName)) return false;
+            }
+            return true;
         }
 
-        public static void addAdmin(Admin admin)
+        public void addAdmin()
         {
+            Console.WriteLine();
             Console.WriteLine("Please give following information for New Admin Registration");
             Console.Write("Username - ");
             string s1 = Console.ReadLine();
@@ -155,41 +298,110 @@ namespace Sample_Application_Inventory.Views
             Console.Write("Password - ");
             string s3 = Console.ReadLine();
 
-            admin.Add_Admin(s1, s2, s3);
+            bool flag = adminController.AddAdmin(s1, s2, s3);
+            if (!flag)
+            {
+                ui_console_statements.showRegistraionError();
+                addAdmin();
+            }
+
+            Console.WriteLine();
 
             Console.WriteLine("New admin added");
+            Console.WriteLine();
+            Console.WriteLine("Returning back to Homepage.");
+            admin_homepage();
         }
 
-        public static void reviewRequest(Admin admin)
+        public void reviewRequest()
         {
-            List<Request> requests = database_manager.GetRequests();
+            Console.WriteLine();
+            Dictionary<Request, int> requests = adminRequestController.GetUnaddressedRequests();
+
+            if(requests.Count == 0)
+            {
+                Console.WriteLine();
+                Console.WriteLine("No request is present");
+                Console.WriteLine();
+                admin_homepage();
+                return;
+            }
             int i = 1;
 
-            foreach (Request request in requests)
+            foreach (var request in requests)
             {
-                Console.WriteLine($"{i}. Product Name - {request.product_name} Department Name - {request.department_name}");
+                Console.WriteLine($"{i}. Product Name - {request.Key.product_name} Department Name - {request.Key.department_name} Quantity Requested - {request.Key.quantity}");
                 i++;
             }
+
+           
             Console.WriteLine();
 
             Console.WriteLine("Please select a request no.");
             Console.Write("Request No.- ");
-            int request_id = Convert.ToInt32(Console.ReadLine());
 
-            if (request_id < 1 || request_id >= i)
+            int request_id;
+            while (true)
             {
-                Console.WriteLine("Invalid Input");
-                return;
+                bool flag1 = int.TryParse(Console.ReadLine(), out request_id);
+                if (!flag1 || request_id < 1 || request_id >= i)
+                {
+                    ui_console_statements.showInvalidStatement();
+                   
+                }
+                else
+                {
+                    break;
+                }
+
             }
+
+            
             Console.WriteLine("Whether you want to accept the request. Answer in Yes or No");
 
-            string s = Console.ReadLine();
-            if (!s.Equals("Yes") && !s.Equals("No"))
+            string s;
+            while (true) {
+                s = Console.ReadLine();
+                if (!s.Equals("Yes") && !s.Equals("No"))
+                {
+                    ui_console_statements.showInvalidStatement();
+                }
+                else
+                {
+                    break;
+                }
+            }
+            
+
+            bool flag = adminRequestController.ReviewRequest(requests.ElementAt(request_id-1).Value, s);
+            if (s.Equals("Yes"))
             {
-                Console.WriteLine("Invalid Input");
+                if (flag)
+                {
+                    Console.WriteLine("Request Successfully accepted.");
+                }
+                else
+                {
+                    Console.WriteLine("Specified Quantity is not available in inventory.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Request Successfully declined.");
             }
 
-            admin.reviewRequest(request_id - 1, s);
+
+        }
+
+        public void logout()
+        {
+
+            Program.app.start();
+        }
+
+        public void exit()
+        {
+            Environment.Exit(0);
         }
     }
 }

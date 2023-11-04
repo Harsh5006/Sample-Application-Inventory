@@ -1,1 +1,15 @@
-[{"products":{},"requests":[],"user_name":"milindmiddha","password":"itsmemilind","email_address":"milindmiddha@gmail.com","role":2}]
+[
+  {
+    "products": {
+      "Mpu4PqDX6b9": 4
+    },
+    "requests": [
+      "Qp8iPyDF3gK",
+      "d5cf2f76-ffd6-427e-84f7-88e56ce9cbe4"
+    ],
+    "user_name": "Akshat",
+    "password": "Akshat@123456",
+    "email_address": "akshat@gmail.com",
+    "role": 2
+  }
+]
