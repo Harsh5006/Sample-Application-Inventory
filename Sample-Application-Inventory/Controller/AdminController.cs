@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
+﻿
 using Sample_Application_Inventory.Database;
 using Sample_Application_Inventory.Models;
+using Sample_Application_Inventory.Models.Enums;
 
 namespace Sample_Application_Inventory
 {
     class AdminController
     {
-        public bool AddAdmin(string user_name,string email_address,string password)
+        public bool AddAdmin(User user)
         {   
-            return AuthManager.Instance.register(user_name, email_address, password,roles.Admin);
+            return AuthManager.Instance.Register(user,Roles.Admin);
         }
 
         public List<Employee> GetEmployees()

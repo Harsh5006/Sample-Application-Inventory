@@ -1,8 +1,14 @@
 [
   {
-    "user_name": "admin",
+    "id": "itsarandomidforAdmin",
+    "username": "admin",
     "password": "Admin@123456",
-    "email_address": "admin@gmail.com",
-    "role": 1
+    "emailAddress": "admin@gmail.com"
+  },
+  {
+    "id": "97724baf-167d-4628-8679-cb2db81f0388",
+    "username": "Super Admin",
+    "password": "SuperAdmin@123456",
+    "emailAddress": "superadmin@gmail.com"
   }
 ]

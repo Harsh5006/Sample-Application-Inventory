@@ -1,17 +1,21 @@
 ﻿//using Sample_Application_Inventory.Views;
 using Sample_Application_Inventory;
-using System;
-
 class Program
 {
     public static App app;
     
     public static void Main(string[] args)
     {
-        //App app = new App();
-        //app.start();
+        try
+        {
+            app = new App();
+            app.Start();
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine("Something went wrong. Application Exiting." + ex.ToString());
+            Environment.Exit(0);
+        }
 
-        app = new App();
-        app.start();
     }
 }

@@ -1,60 +1,61 @@
 ﻿using Sample_Application_Inventory.Views;
-using Sample_Application_Inventory.Models;
+using Sample_Application_Inventory.Common_Data;
+using Sample_Application_Inventory.Models.Enums;
 
 namespace Sample_Application_Inventory
 {
-    
+
     public class App
     {
-        Auth_ui authUI;
+        AuthUI authUI;
 
         public App()
         {
-            authUI = new Auth_ui();
+            authUI = new AuthUI(AuthManager.Instance);
         }
         
-        public void start()
+        public void Start()
         {
-            ui_console_statements.showHomepage();
+            UIConsoleStatements.ShowHomepage();
 
 
             while (true) {
-                Console.WriteLine("Enter 1,2 or 3");
-                int i;
+                Console.WriteLine(CommonString.startingInput);
+                int input;
                 
-                bool flag = int.TryParse(Console.ReadLine(),out i);
+                bool isValidInput = int.TryParse(Console.ReadLine(),out input);
                 
-                if (flag)
+                if (isValidInput)
                 {
-                    var key = (options)i;
-                    if (key == options.login)
+                    var option = (AppStartOptions)input;
+                    if (option == AppStartOptions.login)
                     {
-                        authUI.login();
+                        authUI.Login();
                         break;
                     }
-                    else if (key == options.register)
+                    else if (option == AppStartOptions.register)
                     {
-                        authUI.register();
+                        authUI.Register();
                         break;
                     }
-                    else if (key == options.exit)
+                    else if (option == AppStartOptions.exit)
                     {
-                        exit();
+                        Exit();
 
                     }
                     else
                     {
-                        ui_console_statements.showInvalidStatement();
+                        UIConsoleStatements.ShowInvalidStatement();
                     }
                 }
                 else
                 {
-                    ui_console_statements.showInvalidStatement();
+                    UIConsoleStatements.ShowInvalidStatement();
                 }
             }
         }
 
-        public void exit()
+        public void Exit()
         {
             Environment.Exit(0);
         }

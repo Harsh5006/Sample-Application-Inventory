@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sample_Application_Inventory.Views
+﻿namespace Sample_Application_Inventory.Views
 {
-    class ui_console_statements
+    class UIConsoleStatements
     {
-        public static void showAdminHomepage()
+        public static void ShowAdminHomepage()
         {
             Console.WriteLine();
             Console.WriteLine("1. View Departments");
@@ -24,12 +18,12 @@ namespace Sample_Application_Inventory.Views
             Console.WriteLine();
         }
 
-        public static void showInvalidStatement()
+        public static void ShowInvalidStatement()
         {
             Console.WriteLine("Invalid Input. Please try again.");
         }
 
-        public static void showRegistraionError()
+        public static void ShowRegistraionError()
         {
             Console.WriteLine("User cannot be registered. Please make the following conditions:- ");
             Console.WriteLine("1. Email should in proper format.");
@@ -38,7 +32,7 @@ namespace Sample_Application_Inventory.Views
             Console.WriteLine("4. Or User already exists with same email address.");
         }
 
-        public static void showEmployeeHomepage()
+        public static void ShowEmployeeHomepage()
         {
             Console.WriteLine();
             Console.WriteLine("1. View Previously Allocated Products");
@@ -50,7 +44,7 @@ namespace Sample_Application_Inventory.Views
             Console.WriteLine();
         }
 
-        public static void showHomepage()
+        public static void ShowHomepage()
         {
             Console.WriteLine("*****************************************************");
             Console.WriteLine("Inventory Mangement - Office");

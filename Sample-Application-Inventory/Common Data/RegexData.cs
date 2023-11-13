@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+
 
 namespace Sample_Application_Inventory.Common_Data
 {
-    internal class regex_data
+    internal class RegexData
     {
         public static string email_regex = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
         public static string password_regex = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$";

@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using Sample_Application_Inventory.Common_Data;
+using Sample_Application_Inventory.ControllerInterface;
 using Sample_Application_Inventory.Database;
 using Sample_Application_Inventory.Models;
+using Sample_Application_Inventory.Models.Enums;
 
 namespace Sample_Application_Inventory
 {
-    public class AuthManager
+    public class AuthManager : IAuthManager
     {
         private static AuthManager _instance = null;
 
@@ -18,7 +15,7 @@ namespace Sample_Application_Inventory
         {
             get
             {
-                if(_instance == null)
+                if (_instance == null)
                 {
                     _instance = new AuthManager();
                 }
@@ -26,81 +23,81 @@ namespace Sample_Application_Inventory
             }
         }
 
-        public bool register(string user_name,string email_address,string password,roles role)
+        public bool Register(User user, Roles role)
         {
-            if(!validate_register(user_name,email_address,password)) return false;
-            if(role == roles.Employee)
+            if (!ValidateRegistration(user.username, user.emailAddress, user.password)) return false;
+            if (role == Roles.Employee)
             {
-                Employee employee = new Employee(user_name,email_address,password);
-                DBEmployee.Instance.put(employee);
+                Employee employee = new Employee(user.username, user.emailAddress, user.password);
+                DBEmployee.Instance.Put(employee);
             }
-            else if(role == roles.Admin)
+            else if (role == Roles.Admin)
             {
-                Admin admin = new Admin(user_name, email_address, password);
-                DBAdmin.Instance.put(admin);
+                Admin admin = new Admin(user.username, user.emailAddress, user.password);
+                DBAdmin.Instance.Put(admin);
             }
             return true;
         }
 
 
-        public object login(string email,string password)
+        public object Login(string email, string password)
         {
-            if (!validate_login(email, password)) return null;
-            List<Employee> e = DBEmployee.Instance.Get();
-            foreach (Employee employee in e)
-            {
-                if (employee.email_address.Equals(email) && employee.password.Equals(password))
-                {
-                    return employee;
-                }
-            }
+            if (!ValidateLogin(email, password)) return null;
 
-            List<Admin> a = DBAdmin.Instance.Get();
-            foreach (Admin admin in a)
+            List<Admin> admins = DBAdmin.Instance.Get();
+            foreach (Admin admin in admins)
             {
-                if (admin.email_address.Equals(email) && admin.password.Equals(password))
+                if (admin.emailAddress.Equals(email) && admin.password.Equals(password))
                 {
                     return admin;
                 }
             }
 
+            List<Employee> employees = DBEmployee.Instance.Get();
+            foreach (Employee employee in employees)
+            {
+                if (employee.emailAddress.Equals(email) && employee.password.Equals(password))
+                {
+                    return employee;
+                }
+            }
             return null;
         }
-        
-        private bool validate_register(string user_name,string email_address,string password)
+
+        private bool ValidateRegistration(string userName, string emailAddress, string password)
         {
-            
-            Match match = regex_data.regex1.Match(email_address);
+
+            Match match = RegexData.regex1.Match(emailAddress);
             if (!match.Success)
             {
                 return false;
             }
 
-            
-            Match match2 = regex_data.regex2.Match(password);
+
+            Match match2 = RegexData.regex2.Match(password);
             if (!match2.Success)
             {
                 return false;
             }
 
 
-            if(user_name.Length < 4)
+            if (userName.Length < 4)
             {
                 return false;
             }
 
-            List<Employee> employee = DBEmployee.Instance.Get();
-            foreach(Employee e in  employee)
+            List<Employee> employees = DBEmployee.Instance.Get();
+            foreach (Employee employee in employees)
             {
-                if (e.email_address.Equals(email_address))
+                if (employee.emailAddress.Equals(emailAddress))
                 {
                     return false;
                 }
             }
-            List<Admin> admin = DBAdmin.Instance.Get();
-            foreach(Admin a in admin)
+            List<Admin> admins = DBAdmin.Instance.Get();
+            foreach (Admin admin in admins)
             {
-                if (a.email_address.Equals(email_address))
+                if (admin.emailAddress.Equals(emailAddress))
                 {
                     return false;
                 }
@@ -109,16 +106,16 @@ namespace Sample_Application_Inventory
             return true;
         }
 
-        private bool validate_login(string email_address,string password)
+        private bool ValidateLogin(string emailAddress, string password)
         {
-            
-            Match match = regex_data.regex1.Match(email_address);
+
+            Match match = RegexData.regex1.Match(emailAddress);
             if (!match.Success)
             {
                 return false;
             }
 
-            Match match2 = regex_data.regex2.Match(password);
+            Match match2 = RegexData.regex2.Match(password);
             if (!match2.Success)
             {
                 return false;

@@ -1,25 +1,26 @@
-﻿using Sample_Application_Inventory.Database;
+﻿using Sample_Application_Inventory.ControllerInterface;
+using Sample_Application_Inventory.Database;
 using Sample_Application_Inventory.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Sample_Application_Inventory.Controller
 {
-    public class DepartmentController
+    public class DepartmentController : IDepartmentControllerEmployee,IDepartmentControllerAdmin
     {
-        public void create_new_Department(string name)
+        public void CreateNewDepartment(string name)
         {
 
             Department department = new Department(name, Guid.NewGuid().ToString());
-            DBDepartment.Instance.put(department);
+            DBDepartment.Instance.Put(department);
         }
 
-        public List<Department> getDepartments()
+        public List<Department> GetAllDepartments()
         {
             return DBDepartment.Instance.Get();
+        }
+
+        public Department GetDepartmentById(string id) {
+            return DBDepartment.Instance.GetDepartmentById(id);
         }
     }
 }

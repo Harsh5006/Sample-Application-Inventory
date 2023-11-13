@@ -4,11 +4,12 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using Sample_Application_Inventory.DBInterface;
 using Sample_Application_Inventory.Models;
 
 namespace Sample_Application_Inventory.Database
 {
-    public class DBDepartment : DBHandler<Department>
+    public class DBDepartment : DBHandler<Department>, IDBDepartment
     {
         private Dictionary<string, Department> departmentMap;
         private Dictionary<string, Product> productMap;
@@ -16,6 +17,7 @@ namespace Sample_Application_Inventory.Database
 
         private DBDepartment() : base(FilePaths.department_path)
         {
+
             updateMap();
         }
 
@@ -31,7 +33,7 @@ namespace Sample_Application_Inventory.Database
                 List<Product> department_product = d.GetProducts();
                 foreach (Product p in department_product)
                 {
-                    productMap.Add(p.Id, p);
+                    productMap.Add(p.id, p);
                 }
             }
         }
@@ -54,9 +56,9 @@ namespace Sample_Application_Inventory.Database
 
         public void AddProduct(Product p, int department_index)
         {
-            values[department_index].AddProduct(p); 
-            productMap.Add(p.Id, p);
-            updateInFile();
+            values[department_index].AddProduct(p);
+            productMap.Add(p.id, p);
+            UpdateInFile();
         }
 
         public List<Product> GetProductsByDepartmentId(int department_id)
@@ -65,10 +67,10 @@ namespace Sample_Application_Inventory.Database
         }
 
 
-        public List<Product> GetEmployeesProduct(List<string> data)
+        public List<Product> GetEmployeesProduct(Dictionary<string,int> allocatedProducts)
         {
             List<Product> ls = new List<Product>();
-            foreach (string p in data)
+            foreach (string p in allocatedProducts.Keys)
             {
                 ls.Add(productMap.GetValueOrDefault(p));
             }
@@ -78,9 +80,35 @@ namespace Sample_Application_Inventory.Database
 
         public void UpdateReturnProduct()
         {
-            updateInFile();
-            DBEmployee.Instance.updateInFile();
+            UpdateInFile();
+            DBEmployee.Instance.UpdateInFile();
             updateMap();
+        }
+
+        public Product GetProductById(string id)
+        {
+            foreach (KeyValuePair<string, Product> p in productMap)
+            {
+                if (p.Key.Equals(id))
+                {
+                    return p.Value;
+                }
+            }
+
+            return null;
+        }
+
+        public Department GetDepartmentById(string id)
+        {
+            foreach (KeyValuePair<string, Department> p in departmentMap)
+            {
+                if (p.Key.Equals(id))
+                {
+                    return p.Value;
+                }
+            }
+
+            return null;
         }
     }
 }

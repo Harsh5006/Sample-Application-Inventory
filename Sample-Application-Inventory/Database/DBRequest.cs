@@ -1,23 +1,20 @@
-﻿using Sample_Application_Inventory.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Sample_Application_Inventory.DBInterface;
+using Sample_Application_Inventory.Models;
+
 
 namespace Sample_Application_Inventory.Database
 {
-    public class DBRequest : DBHandler<Request>
+    public class DBRequest : DBHandler<Request>, IDBRequest
     {
         Dictionary<string, Request> requestMap;
 
 
         private DBRequest() : base(FilePaths.requests_path)
         {
+            requestMap = new Dictionary<string, Request>();
             foreach (Request r in values)
             {
-                requestMap.Add(r.Id, r);
+                requestMap.Add(r.id, r);
             }
         }
 
@@ -37,20 +34,20 @@ namespace Sample_Application_Inventory.Database
         }
 
 
-        override public void put(Request r)
+        override public void Put(Request r)
         {
-            base.put(r);
-            requestMap.Add(r.Id, r);
-            DBEmployee.Instance.updateInFile();
+            base.Put(r);
+            requestMap.Add(r.id, r);
+            DBEmployee.Instance.UpdateInFile();
         }
 
 
-        public void updateRequest()
+        public void UpdateRequest()
         {
-            updateInFile();
+            UpdateInFile();
 
-            DBEmployee.Instance.updateInFile();
-            DBDepartment.Instance.updateInFile();
+            DBEmployee.Instance.UpdateInFile();
+            DBDepartment.Instance.UpdateInFile();
         }
 
 
@@ -74,7 +71,8 @@ namespace Sample_Application_Inventory.Database
 
             foreach (Request request in values)
             {
-                if (request.status_Id == 1)
+                
+                if (request.status == StatusType.NotAddressed)
                 {
 
                     ls.Add(request, i);

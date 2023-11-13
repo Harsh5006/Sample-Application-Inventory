@@ -1,24 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sample_Application_Inventory.Models
+﻿namespace Sample_Application_Inventory.Models
 {
 
 
     public class User
     {
-        public string user_name;
+        public string id;
+        public string username;
         public string password;
-        public string email_address;
+        public string emailAddress;
 
-        public User(string user_name, string password, string email_address)
+        public User(string userName, string password, string emailAddress)
         {
-            this.user_name = user_name;
+            this.id = Guid.NewGuid().ToString();
+            username = userName;
             this.password = password;
-            this.email_address = email_address;
+            this.emailAddress = emailAddress;
         }
     }
 }

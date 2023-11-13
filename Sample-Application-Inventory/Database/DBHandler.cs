@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
+using Sample_Application_Inventory.DBInterface;
 using Sample_Application_Inventory.Models;
 
 namespace Sample_Application_Inventory.Database
 {
-    public class DBHandler<T>
+    public class DBHandler<T> : IDBHandler<T>
     {
         protected List<T> values;
         private string path;
@@ -17,30 +18,29 @@ namespace Sample_Application_Inventory.Database
                 string data = File.ReadAllText(path);
                 values = JsonConvert.DeserializeObject<List<T>>(data);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 values = new List<T>();
             }
-            
         }
 
 
-        public void updateInFile()
+        public void UpdateInFile()
         {
             string newData = JsonConvert.SerializeObject(values);
             File.WriteAllText(path, newData);
         }
-        
+
 
         public List<T> Get()
         {
             return values;
         }
 
-        virtual public void put(T item)
+        virtual public void Put(T item)
         {
             values.Add(item);
-            updateInFile();
+            UpdateInFile();
         }
     }
 }

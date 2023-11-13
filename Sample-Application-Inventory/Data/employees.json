@@ -1,15 +1,1 @@
-[
-  {
-    "products": {
-      "Mpu4PqDX6b9": 4
-    },
-    "requests": [
-      "Qp8iPyDF3gK",
-      "d5cf2f76-ffd6-427e-84f7-88e56ce9cbe4"
-    ],
-    "user_name": "Akshat",
-    "password": "Akshat@123456",
-    "email_address": "akshat@gmail.com",
-    "role": 2
-  }
-]
+[{"products":{"a4d6f8a2-e91b-4655-9ce8-869a7a58508c":2},"requests":["92d72838-b0e5-4672-bad4-838a0f6ab60b"],"id":"955ebcdd-95c3-4661-8232-402ac778f326","username":"Akshat","password":"Akshat@123456","emailAddress":"akshat@gmail.com"}]

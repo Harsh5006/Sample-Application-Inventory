@@ -1,8 +1,10 @@
-﻿using Sample_Application_Inventory.Models;
+﻿
+using Sample_Application_Inventory.DBInterface;
+using Sample_Application_Inventory.Models;
 
 namespace Sample_Application_Inventory.Database
 {
-    internal class DBAdmin : DBHandler<Admin>
+    public class DBAdmin : DBHandler<Admin>,IDBAdmin
     {
 
 

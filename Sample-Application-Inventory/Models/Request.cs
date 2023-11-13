@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace Sample_Application_Inventory.Models
 {
-    enum status_type
+    public enum StatusType
     {
         NotAddressed = 1,
         Accepted = 2,
@@ -14,31 +10,39 @@ namespace Sample_Application_Inventory.Models
     }
     public class Request
     {
-        public string Id;
-        public int product_id;
-        public int department_id;
+        public string id;
+        public string productId;
+        public string departmentId;
+        public string userId;
         public int quantity;
-        public string product_name;
-        public string department_name;
-        public string email_address;
-        public string status;
-        public int status_Id;
+        public StatusType status;
 
-        public Request(string Id, int product_id, int department_id, int quantity, string product_name, string department_name, string email_address)
+        //public Request(string id, int product_id, int department_id, int quantity, string product_name, string department_name, string email_address)
+        //{
+        //    this.id = id;
+        //    this.productId = product_id;
+        //    this.departmentId = department_id;
+        //    this.quantity = quantity;
+        //    this.product_name = product_name;
+        //    this.department_name = department_name;
+        //    this.email_address = email_address;
+        //    status = "Not addressed yet.";
+        //    status_Id = (int)StatusType.NotAddressed;
+        //}
+
+        public Request(string productId,string departmentId,string userId,int quantity)
         {
-            this.Id = Id;
-            this.product_id = product_id;
-            this.department_id = department_id;
+            this.id = Guid.NewGuid().ToString();
+            this.productId = productId;
+            this.departmentId = departmentId;
+            this.userId = userId;
             this.quantity = quantity;
-            this.product_name = product_name;
-            this.department_name = department_name;
-            this.email_address = email_address;
-            status = "Not addressed yet.";
-            status_Id = (int)status_type.NotAddressed;
+            this.status = StatusType.NotAddressed;
         }
-        public void changeStatus(int num)
-        {
-            status_Id = num;
-        }
+        
+        //public void changeStatus(int num)
+        //{
+        //    status_Id = num;
+        //}
     }
 }

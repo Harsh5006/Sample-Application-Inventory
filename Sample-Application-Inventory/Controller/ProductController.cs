@@ -1,82 +1,66 @@
 ﻿using Sample_Application_Inventory.Database;
 using Sample_Application_Inventory.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Sample_Application_Inventory.ControllerInterface;
+
 
 namespace Sample_Application_Inventory.Controller
 {
-    public class ProductController
+    public class ProductController : IProductControllerEmployee,IProductControllerAdmin
     {
-        public void CreateNewProduct(string name, string department_name, int quantity, int department_id, string d_id)
+        public void CreateNewProduct(Product product,int departmentIndex)
         {
-            Product product = new Product(name, Guid.NewGuid().ToString(), d_id, quantity);
-            DBDepartment.Instance.AddProduct(product, department_id);
+            DBDepartment.Instance.AddProduct(product, departmentIndex);            
         }
 
 
         public Dictionary<Product, int> GetEmployeeProducts(Employee employee)
         {
-            List<string> ls = new List<string>();
-            foreach (var product in employee.products)
+            List<Product> employeeAllocatedProducts = DBDepartment.Instance.GetEmployeesProduct(employee.products);
+            Dictionary<Product, int> employeeAllocatedProductsWithQuantity = new Dictionary<Product, int>();
+            int index = 0;
+            foreach (Product product in employeeAllocatedProducts)
             {
-                ls.Add(product.Key);
+                employeeAllocatedProductsWithQuantity.Add(product, employee.products.ElementAt(index++).Value);
             }
 
-            //Dictinary<string,Product> product_map = 
-
-
-            //List<Product> ls = new List<Product>();
-            //foreach (string p in data)
-            //{
-            //    ls.Add(products_map.GetValueOrDefault(p));
-            //}
-            //return ls;
-
-
-            List<Product> ls1 = DBDepartment.Instance.GetEmployeesProduct(ls);
-            Dictionary<Product, int> dict = new Dictionary<Product, int>();
-            int i = 0;
-            foreach (Product product in ls1)
-            {
-                dict.Add(product, employee.products.ElementAt(i++).Value);
-            }
-
-            return dict;
+            return employeeAllocatedProductsWithQuantity;
         }
 
-        public void returnProduct(Employee employee,Product p, int quantity, int product_id)
+        public void ReturnProduct(Employee employee,Product product, int quantity, int productIndex)
         {
-            int quant = employee.products.ElementAt(product_id).Value;
-            if (quantity == quant)
+            int allocatedQuantity = employee.products.ElementAt(productIndex).Value;
+            if (quantity == allocatedQuantity)
             {
-                employee.products.Remove(p.Id);
-                p.Quantity += quantity;
+                employee.products.Remove(product.id);
+                product.quantity += quantity;
             }
             else
             {
-                employee.products.Remove(p.Id);
-                employee.products.Add(p.Id, quant - quantity);
-                p.Quantity += quantity;
+                employee.products.Remove(product.id);
+                employee.products.Add(product.id, allocatedQuantity - quantity);
+                product.quantity += quantity;
             }
 
             DBDepartment.Instance.UpdateReturnProduct();
         }
 
-        public void addProduct(Employee employee,Product p, int quantity)
+        public void AddProductToEmployee(Employee employee,Product product, int quantity)
         {
-            if (employee.products.ContainsKey(p.Id))
+            if (employee.products.ContainsKey(product.id))
             {
-                int quant = employee.products.GetValueOrDefault(p.Id);
-                employee.products.Remove(p.Id);
-                employee.products.Add(p.Id, quant + quantity);
+                int quant = employee.products.GetValueOrDefault(product.id);
+                employee.products.Remove(product.id);
+                employee.products.Add(product.id, quant + quantity);
             }
             else
             {
-                employee.products.Add(p.Id, quantity);
+                employee.products.Add(product.id, quantity);
             }
+        }
+
+        public Product GetProductById(string id)
+        {
+            return DBDepartment.Instance.GetProductById(id);
         }
     }
 }
